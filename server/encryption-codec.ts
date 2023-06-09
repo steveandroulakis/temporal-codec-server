@@ -56,7 +56,27 @@ export class EncryptionCodec implements PayloadCodec {
         }
         const decryptedPayloadBytes = await decrypt(payload.data, key);
         console.log('Decrypting payload.data:', payload.data);
-        return temporal.api.common.v1.Payload.decode(decryptedPayloadBytes);
+
+        let decryptedPayload = temporal.api.common.v1.Payload.decode(decryptedPayloadBytes);
+      
+        // If Payload.data contains JSON data, redact any sensitive information
+        if (decryptedPayload.data) {
+          try {
+            let payloadDataStr = new TextDecoder().decode(decryptedPayload.data);
+            let payloadDataJson = JSON.parse(payloadDataStr);
+            if (payloadDataJson.token === 'tok_visa') {
+              console.log(`Found 'token' in payload. Redacting...`);
+              payloadDataJson.token = '[READACTED]';
+              decryptedPayload.data = new TextEncoder().encode(JSON.stringify(payloadDataJson)); // Encode back to Uint8Array
+            }
+          } catch (error) {
+            // If Payload.data can't be parsed as JSON, do nothing and proceed with the original decryptedPayload
+          }
+        }
+  
+        return decryptedPayload;
+
+        // return temporal.api.common.v1.Payload.decode(decryptedPayloadBytes);
       })
     );
   }
