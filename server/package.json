@@ -5,12 +5,13 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "worker.workflow": "nodemon temporal/worker.workflow.ts",
-        "worker.activity": "nodemon temporal/worker.activity.ts"
+        "start": "ts-node index.ts"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@temporalio/common": "^1.7.4",
+        "@temporalio/proto": "^1.7.4",
         "body-parser": "^1.20.2",
         "cors": "^2.8.5",
         "dotenv": "^16.0.3",
