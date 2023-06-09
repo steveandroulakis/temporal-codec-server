@@ -4,11 +4,25 @@ import express from 'express';
 import * as proto from '@temporalio/proto';
 import { EncryptionCodec } from './encryption-codec';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
+import { JwtHeader, VerifyOptions } from 'jsonwebtoken';
+import jwksClient, { RsaSigningKey, SigningKey } from "jwks-rsa";
 
 // most of this code is from the Temporal samples repo
 // https://github.com/temporalio/samples-typescript/blob/main/encryption/src/codec-server.ts
 
 type Payload = proto.temporal.api.common.v1.IPayload;
+
+const client = jwksClient({
+    jwksUri: 'https://prod-tmprl.us.auth0.com/.well-known/jwks.json',
+});
+
+// get JWT signing key
+function getKey(header: JwtHeader, callback: (err: Error | null, key?: string | Buffer) => void): void {
+    client.getSigningKey(header.kid as string, (err: Error | null, key?: SigningKey) => {
+        callback(err, key?.getPublicKey());
+    });
+}
 
 interface JSONPayload {
     metadata?: Record<string, string> | null;
@@ -64,10 +78,42 @@ async function main() {
     const codec = await EncryptionCodec.create('c2EtZGVtby1rZXk=');
 
     const app = express();
-    app.use(cors({ allowedHeaders: ['x-namespace', 'content-type'] }));
+    app.use(cors({
+        origin: 'https://cloud.temporal.io',  // Or true to allow any origin
+        allowedHeaders: ['x-namespace', 'content-type', 'authorization'], // Added 'authorization'
+        credentials: true  // This is the important line
+    }));
     app.use(express.json());
 
     app.post('/decode', async (req, res) => {
+        //console.log(`Received request to /decode`);
+        //console.log('Request headers:', req.headers);
+        //console.log('Request body:', req.body);
+        
+        const authHeader = req.headers.authorization;
+        //console.log(`Auth header: ${authHeader}`);
+
+        const printToken = authHeader ? authHeader.split(' ')[1] : undefined;
+        //console.log(`Authorization token: ${printToken}`);
+
+        // if auth header doesn't exist or doesn't start with 'Bearer ' then reject
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).end('Unauthorized');
+        }
+
+        // getKey from Temporal's jwks.json and verify token against it
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err, decoded) => {
+            if (err) {
+                console.error('Failed to verify token:', err);
+                return res.status(403).end('Invalid token');
+            }
+
+            console.log('Decoded JWT:', decoded);  // This will print the payload of the JWT
+
+            // Here you can use the claims in `decoded` to identify the user and authorize their request.
+        });
+
         try {
             const { payloads: raw } = req.body as Body;
             const encoded = raw.map(fromJSON);
