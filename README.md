@@ -1,7 +1,7 @@
 ## Temporal Codec Server
-TODO URL
+https://codec.tmprl-demo.cloud/
 
-- TODO, coherent instructions!
+Based on the [Temporal Typescript Sample](https://github.com/temporalio/samples-typescript/blob/main/encryption/src/codec-server.ts)
 
 ### Install
 - `cd server/`
@@ -22,7 +22,7 @@ TODO URL
 
 `docker run -p 3000:3000 -e PORT=3000 -d --platform linux/amd64 temporal-codec-server`
 
-### Kubernetes (not implemented yet)
+### Kubernetes
 
 - Edit the yaml files to ensure your environment variables are correct (e.g. namespace and address).
 
@@ -31,4 +31,5 @@ cd yaml/
 kubectl apply -f deployments/server-deployment.yaml
 kubectl apply -f services/server-service.yaml
 kubectl apply -f ingress/server-ingress.yaml
+kubectl apply -f certificates/certificate.yaml
 ```
