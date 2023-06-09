@@ -101,7 +101,7 @@ async function main() {
             return res.status(401).end('Unauthorized');
         }
 
-        // getKey from Temporal's jwks.json and verify token against it
+        // verify the signature on this access token (in your authorization header) against the JWKS endpoint
         const token = authHeader.split(' ')[1];
         jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err, decoded) => {
             if (err) {
