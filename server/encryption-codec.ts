@@ -65,7 +65,7 @@ export class EncryptionCodec implements PayloadCodec {
 async function fetchKey(_keyId: string): Promise<crypto.CryptoKey> {
   // In production, fetch key from a key management system (KMS). You may want to memoize requests if you'll be decoding
   // Payloads that were encrypted using keys other than defaultKeyId.
-  const key = Buffer.from('test-key-test-key-test-key-test!');
+  const key = Buffer.from('sa-rocks!sa-rocks!sa-rocks!yeah!');
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
     key,

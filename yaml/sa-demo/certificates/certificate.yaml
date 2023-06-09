@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tmprl-demo-cloud-server
+spec:
+  dnsNames:
+  - codec.tmprl-demo.cloud
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+  privateKey:
+    rotationPolicy: Always
+  secretName: tmprl-demo-cloud-server-tls

@@ -61,7 +61,7 @@ function toJSON({ metadata, data }: proto.temporal.api.common.v1.IPayload): JSON
 
 async function main() {
 
-    const codec = await EncryptionCodec.create('sample-key-id');
+    const codec = await EncryptionCodec.create('c2EtZGVtby1rZXk=');
 
     const app = express();
     app.use(cors({ allowedHeaders: ['x-namespace', 'content-type'] }));

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temporal-codec-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: temporal-codec-server
+  template:
+    metadata:
+      labels:
+        app: temporal-codec-server
+    spec:
+      containers:
+        - name: server
+          image: steveandroulakis/temporal-codec-server:latest
+          imagePullPolicy: Always
+          ports:
+            - name: server
+              containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
