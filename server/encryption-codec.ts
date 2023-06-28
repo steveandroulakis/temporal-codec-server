@@ -66,7 +66,7 @@ export class EncryptionCodec implements PayloadCodec {
             let payloadDataJson = JSON.parse(payloadDataStr);
             if (payloadDataJson.token === 'tok_visa') {
               console.log(`Found 'token' in payload. Redacting...`);
-              payloadDataJson.token = '[READACTED]';
+              payloadDataJson.token = '[REDACTED]';
               decryptedPayload.data = new TextEncoder().encode(JSON.stringify(payloadDataJson)); // Encode back to Uint8Array
             }
           } catch (error) {
