@@ -1,5 +1,10 @@
 ## Temporal Codec Server
-https://codec.tmprl-demo.cloud/
+Deployed here https://codec.tmprl-demo.cloud
+
+To use:
+- The Codec server URL is `https://codec.tmprl-demo.cloud` (note NO trailing slash)
+- The tmprl-demo.cloud deployment only works with Temporal Cloud namespaces (because we validate the JWT against Cloud's JWKS endpoint)
+- You must enable "Pass the user access token with your endpoint" in your Codec Server configuration in the Temporal UI
 
 Based on the [Temporal Typescript Sample](https://github.com/temporalio/samples-typescript/blob/main/encryption/src/codec-server.ts)
 
