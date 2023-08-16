@@ -86,15 +86,15 @@ async function main() {
     app.use(express.json());
 
     app.post('/decode', async (req, res) => {
-        //console.log(`Received request to /decode`);
-        //console.log('Request headers:', req.headers);
-        //console.log('Request body:', req.body);
+        console.log(`Received request to /decode`);
+        console.log('Request headers:', req.headers);
+        console.log('Request body:', req.body);
         
         const authHeader = req.headers.authorization;
-        //console.log(`Auth header: ${authHeader}`);
+        console.log(`Auth header: ${authHeader}`);
 
         const printToken = authHeader ? authHeader.split(' ')[1] : undefined;
-        //console.log(`Authorization token: ${printToken}`);
+        console.log(`Authorization token: ${printToken}`);
 
         // if auth header doesn't exist or doesn't start with 'Bearer ' then reject
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
